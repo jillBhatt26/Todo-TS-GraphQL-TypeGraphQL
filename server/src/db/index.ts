@@ -16,4 +16,5 @@ const connectDB = () =>
         }
     });
 
+export * from './models';
 export { connectDB };
