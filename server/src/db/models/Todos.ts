@@ -1,7 +1,8 @@
 import { Schema, model } from 'mongoose';
-import { ITodoSchema } from '@interfaces';
+import { ITodo } from '@interfaces';
+import { ETodoStatus } from '@enums';
 
-const TodoSchema = new Schema<ITodoSchema>(
+const TodoSchema = new Schema<ITodo>(
     {
         name: {
             type: String,
@@ -14,7 +15,8 @@ const TodoSchema = new Schema<ITodoSchema>(
         status: {
             type: String,
             enum: ['pending', 'progress', 'completed'],
-            required: true
+            required: true,
+            default: ETodoStatus.PENDING
         }
     },
     {

@@ -1,12 +1,15 @@
-import { readFileSync } from 'fs';
-import path from 'path';
+// import { readFileSync } from 'fs';
+// import path from 'path';
 import 'colors';
 import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
 // import { buildSubgraphSchema } from '@apollo/subgraph';
 import cors from 'cors';
 import express, { Application } from 'express';
-import gql from 'graphql-tag';
+// import gql from 'graphql-tag';
+import 'reflect-metadata';
+import { buildSchema } from 'type-graphql';
+import { TodoResolver } from '@resolvers';
 import { FE_URL, NODE_ENV, PORT } from '@config';
 import { connectDB } from '@db';
 
@@ -26,20 +29,29 @@ connectDB()
             })
         );
 
-        const typeDefs = gql(
-            readFileSync(path.resolve(__dirname, 'schema', 'index.graphql'), {
-                encoding: 'utf-8'
-            })
-        );
+        // const typeDefs = gql(
+        //     readFileSync(path.resolve(__dirname, 'schema', 'index.graphql'), {
+        //         encoding: 'utf-8'
+        //     })
+        // );
 
         // const server = new ApolloServer({
         //     schema: buildSubgraphSchema({ typeDefs, resolvers: {} }),
         //     introspection: NODE_ENV !== 'production'
         // });
 
+        // const server = new ApolloServer({
+        //     typeDefs,
+        //     resolvers: [TodoResolver],
+        //     introspection: NODE_ENV !== 'production'
+        // });
+
+        const schema = await buildSchema({
+            resolvers: [TodoResolver]
+        });
+
         const server = new ApolloServer({
-            typeDefs,
-            resolvers: {},
+            schema,
             introspection: NODE_ENV !== 'production'
         });
 
@@ -48,8 +60,8 @@ connectDB()
         });
 
         console.log(
-            `MongoDB connected on: ${conn.connection.host}...✅`.blue.underline
-                .bold
+            `✅...MongoDB connected on: ${conn.connection.host}...✅`.blue
+                .underline.bold
         );
 
         console.log(
@@ -58,7 +70,8 @@ connectDB()
     })
     .catch(error => {
         console.log(
-            `MongoDB connection error: ${error.message}...✅`.red.underline.bold
+            `❌...MongoDB connection er...: ${error.message}...❌`.red.underline
+                .bold
         );
 
         process.exit(1);

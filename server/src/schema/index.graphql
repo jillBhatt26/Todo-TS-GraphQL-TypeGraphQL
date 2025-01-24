@@ -4,6 +4,18 @@ enum TodoStatus {
     COMPLETE
 }
 
+input CreateTodoInput {
+    name: String!
+    description: String!
+    status: TodoStatus
+}
+
+input UpdateTodoInput {
+    name: String
+    description: String
+    status: TodoStatus
+}
+
 type Todo {
     id: ID!
     name: String!
@@ -13,11 +25,11 @@ type Todo {
 
 type Query {
     todo(id: ID!): Todo
-    todos: [Todo]
+    todos: [Todo]!
 }
 
 type Mutation {
-    createTodo(name: String!, description: String, status: TodoStatus): Todo
-    updateTodo(name: String, description: String, status: TodoStatus): Todo
-    deleteTodo(id: ID!): Boolean
+    createTodo(createTodoData: CreateTodoInput!): Todo!
+    updateTodo(id: ID!, updateTodoData: UpdateTodoInput!): Todo!
+    deleteTodo(id: ID!): Boolean!
 }
