@@ -3,7 +3,7 @@ import path from 'path';
 import 'colors';
 import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
-import { buildSubgraphSchema } from '@apollo/subgraph';
+// import { buildSubgraphSchema } from '@apollo/subgraph';
 import cors from 'cors';
 import express, { Application } from 'express';
 import gql from 'graphql-tag';
@@ -32,12 +32,20 @@ connectDB()
             })
         );
 
+        // const server = new ApolloServer({
+        //     schema: buildSubgraphSchema({ typeDefs, resolvers: {} }),
+        //     introspection: NODE_ENV !== 'production'
+        // });
+
         const server = new ApolloServer({
-            schema: buildSubgraphSchema({ typeDefs, resolvers: {} }),
+            typeDefs,
+            resolvers: {},
             introspection: NODE_ENV !== 'production'
         });
 
-        startStandaloneServer(server, { listen: { port: PORT } });
+        const { url } = await startStandaloneServer(server, {
+            listen: { port: PORT }
+        });
 
         console.log(
             `MongoDB connected on: ${conn.connection.host}...✅`.blue.underline
@@ -45,8 +53,7 @@ connectDB()
         );
 
         console.log(
-            `🚀🚀🚀...Server listening on port: ${PORT}...🚀🚀🚀`.white
-                .underline.bold
+            `🚀🚀🚀...Server listening on: ${url}...🚀🚀🚀`.white.underline.bold
         );
     })
     .catch(error => {
